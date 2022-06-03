@@ -1,49 +1,25 @@
 package ua.nure.parkhomenko.lab2;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
-
-
-import androidx.core.content.res.ResourcesCompat;
-
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Note implements Parcelable {
     private String dateTime;
-
-    // картинка
-    //private byte[] image = null; //   OLD
     private String imagePath = null;
-
     private String title;
     private int importance;
     private String description;
 
-    Note(String newTitle, String newDescription, int importance, /*byte[] image*/ String imagePath) {  //   OLD
+    Note(String newTitle, String newDescription, int importance, String imagePath) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //"dd.MM.yyyy HH:mm:ss aaa z"
         dateTime = simpleDateFormat.format(calendar.getTime());
         title = newTitle;
         this.importance = importance;
         description = newDescription;
-        // картинка
-        //if (imagePath != null) {
-            this.imagePath = imagePath;
-        //}
-
-        //   OLD
-        /*if (image != null) {
-            this.image = image;
-        }*/
-
+        this.imagePath = imagePath;
     }
 
     public Note(Parcel in) {
@@ -52,10 +28,6 @@ public class Note implements Parcelable {
         importance = in.readInt();
         description = in.readString();
         imagePath = in.readString();
-        //  КАРТИНКА (ИЗ-ЗА ПРОБЛЕМ С ПАРСЕЛОМ
-        /*//if (image != null)
-            in.readByteArray(this.image);
-         */
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -81,7 +53,6 @@ public class Note implements Parcelable {
             default:
                 return R.drawable.green;
         }
-
     }
 
     public String getTitle() {
@@ -130,35 +101,12 @@ public class Note implements Parcelable {
         parcel.writeInt(importance);
         parcel.writeString(description);
         parcel.writeString(imagePath);
-        //  КАРТИНКА (ИЗ-ЗА ПРОБЛЕМ С ПАРСЕЛОМ
-        //parcel.writeByteArray(this.image);
     }
-
-
-//   OLD
-    /*public byte[] getImageInBytes() {
-        return image;
-    }
-    public void setImage(byte[] imageInByte) {
-        image = imageInByte;
-    }
-
-    public boolean hasUserImage() {
-        return image != null;
-    }
-
-
-    public Bitmap getImageBitmap() {
-        Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
-        return bmp;
-        //ImageView image = (ImageView) findViewById(R.id.imageView1);
-        //image.setImageBitmap(Bitmap.createScaledBitmap(bmp, image.getWidth(), image.getHeight(), false));
-    }
-*/
 
     public String getImagePath() {
         return imagePath;
     }
+
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }

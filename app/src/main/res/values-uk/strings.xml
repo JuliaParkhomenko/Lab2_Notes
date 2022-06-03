@@ -11,6 +11,10 @@
     <string name = "filterByMostImportant_noteBtn" > Найважливіші </string>
     <string name = "filterByImportant_noteBtn" > Важливі </string>
     <string name = "filterByNotVeryImportant_noteBtn" > Не дуже важливі </string>
+    <string name = "dataSaved" > Дані збережено </string>
+    <string name = "dataNotSaved" > Дані не збережено </string>
+    <string name = "noDataYet" > Здоровенькі були! У вас ще немає даних. </string>
+    <string name = "dataRecovered" > Дані відновлено </string>
 
     <string name = "menu_edit" > Редагувати нотатку </string>
     <string name = "menu_delete" > Видалити нотатку </string>

@@ -3,7 +3,6 @@ package ua.nure.parkhomenko.lab2;
 import java.util.ArrayList;
 import android.content.Context;
 import com.google.gson.Gson;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

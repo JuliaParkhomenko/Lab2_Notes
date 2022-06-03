@@ -11,6 +11,10 @@
     <string name = "filterByMostImportant_noteBtn" > Most important </string>
     <string name = "filterByImportant_noteBtn" > Important </string>
     <string name = "filterByNotVeryImportant_noteBtn" > Not very important </string>
+    <string name = "dataSaved" > Data saved </string>
+    <string name = "dataNotSaved" > Data isn`t saved </string>
+    <string name = "noDataYet" > Hello! You haven`t any data yet. </string>
+    <string name = "dataRecovered" > Data recovered </string>
 
     <string name = "menu_edit" > Edit note </string>
     <string name = "menu_delete" > Delete note </string>
