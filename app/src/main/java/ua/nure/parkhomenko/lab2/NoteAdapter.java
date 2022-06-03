@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
     private LayoutInflater inflater;
@@ -30,6 +31,7 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
     private List<Note> filterednotes;
     // добавила для фильтра
 
+    String searchCharText = "";
     String importanceFilter="All";
 
     // invoke the suitable constructor of the ArrayAdapter class
@@ -40,10 +42,11 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
         super(context, resource, notes);
         this.notes = notes;
 
+        /*
         // добавила для фильтра
         filterednotes = notes;
         // добавила для фильтра
-
+         */
         this.layout = resource;
         this.inflater = LayoutInflater.from(context);
     }
@@ -70,7 +73,7 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
     //@NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        //boolean isAtLeastOneNoteToDisplay = false;
         // convertView which is recyclable view
         View currentItemView = convertView;
 
@@ -121,6 +124,17 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
 //        assert currentNumberPosition != null;
 //        noteImage.setImageResource(currentNumberPosition.getNumbersImageId());
 
+        //          SEARCH
+        if(!searchCharText.isEmpty()){
+            searchCharText = searchCharText.toLowerCase(Locale.getDefault());
+
+                    if (!note.getTitle().toLowerCase(Locale.getDefault())
+                            .contains(searchCharText)){
+                        currentItemView = LayoutInflater.from(getContext()).inflate(R.layout.view_hide_note, parent, false);
+                        return currentItemView;
+                    }
+        }
+
         ImageView ivImage = currentItemView.findViewById(R.id.iv_notePicture);
         if(note.getImagePath()!=null) {
             Bitmap myBitmap = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ File.separator + note.getImagePath()+".jpg");
@@ -159,5 +173,9 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
 
     public void setImportanceFilter(String importanceFilter) {
         this.importanceFilter=importanceFilter;
+    }
+
+    public void setSearchCharText(String s) {
+        searchCharText=s;
     }
 }

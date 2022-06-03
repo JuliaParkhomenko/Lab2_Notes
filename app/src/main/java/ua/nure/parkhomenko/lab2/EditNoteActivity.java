@@ -223,8 +223,7 @@ public class EditNoteActivity extends AppCompatActivity {
                 String imagePath = et_title.getText().toString();
 
                 // Requesting Permission to access External Storage
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        23);
+               // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 23);
 
                 // getExternalStoragePublicDirectory() represents root of external storage, we are using DOWNLOADS
                 // We can use following directories: MUSIC, PODCASTS, ALARMS, RINGTONES, NOTIFICATIONS, PICTURES, MOVIES
