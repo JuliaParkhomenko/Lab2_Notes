@@ -6,12 +6,15 @@
         android:id="@+id/btnSearch"
         android:icon="@drawable/ic_search"
         android:title="@string/search_noteBtn"
-        app:showAsAction="always|collapseActionView"
-        app:actionViewClass="android.widget.SearchView"/>
+        android:queryHint="Search"
+        android:orderInCategory="2"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/btnFilter"
         android:icon="@drawable/ic_filter"
         android:title="@string/filter_noteBtn"
+        android:orderInCategory="1"
         app:showAsAction="always">
         <menu>
             <item
@@ -35,6 +38,7 @@
     <item
         android:id="@+id/btnAddNote"
         android:icon="@drawable/ic_plus"
+        android:orderInCategory="0"
         android:title="@string/add_noteBtn"
         app:showAsAction="always" />
 </menu>

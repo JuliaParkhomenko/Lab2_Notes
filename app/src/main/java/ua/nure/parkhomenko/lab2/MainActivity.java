@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -58,31 +60,29 @@ public class MainActivity extends AppCompatActivity {
                                 } else if (action.equals("edit")) {
                                     String index_position_string = data.getStringExtra("INDEX_POSITION");
                                     int index_position = Integer.parseInt(index_position_string);
-                                    if(imagePath!=null){
-                                      if(!notes.get(index_position).getTitle().equals(newNote.getTitle())){
-                                            if(notes.get(index_position).getImagePath()!=null){
+                                    if (imagePath != null) {
+                                        if (!notes.get(index_position).getTitle().equals(newNote.getTitle())) {
+                                            if (notes.get(index_position).getImagePath() != null) {
                                                 // Accessing the saved data from the downloads folder
                                                 File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
                                                 // myData represent the file data that is saved publicly
-                                                File file = new File(folder,/*Environment.getExternalStorageDirectory() + File.separator +*/ notes.get(index_position).getImagePath()+".jpg");
-                                                if(file.exists()) {
+                                                File file = new File(folder,/*Environment.getExternalStorageDirectory() + File.separator +*/ notes.get(index_position).getImagePath() + ".jpg");
+                                                if (file.exists()) {
                                                     file.delete();
                                                 }
                                             }
-                                        else{
-                                            //todo удалить картинку по старому пути и
                                         }
+                                        //System.out.println(index_position);
+                                        notes.set(index_position, newNote);
+                                        noteAdapter.notifyDataSetChanged();
                                     }
-                                    //System.out.println(index_position);
-                                    notes.set(index_position, newNote);
-                                    noteAdapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Operation canceled", Toast.LENGTH_LONG).show();
                                 }
-                            } else {
-                                Toast.makeText(MainActivity.this, "Operation canceled", Toast.LENGTH_LONG).show();
                             }
                         }
-                    }}
+                    }
             );
 
     @Override
@@ -142,6 +142,59 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+        //     NEW FOR SEARCH
+        // Initialise menu item search bar
+        // with id and take its object
+        MenuItem searchViewItem
+                = menu.findItem(R.id.btnSearch);
+        SearchView searchView = (SearchView) searchViewItem.getActionView();
+
+        //SearchView searchView = (SearchView) findViewById(R.id.btnSearch); // inititate a search view
+
+        // attach setOnQueryTextListener
+        // to search view defined above
+        searchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+
+                    // Override onQueryTextSubmit method
+                    // which is call
+                    // when submitquery is searched
+
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if (query.isEmpty()) {
+                            noteAdapter.setSearchCharText("");
+                        } else {
+                            noteAdapter.setSearchCharText(query);
+
+                        }
+                        noteAdapter.notifyDataSetChanged();
+                        return false;
+                    }
+                    // This method is overridden to filter
+                    // the adapter according to a search query
+                    // when the user is typing search
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        if (newText.isEmpty()) {          //НЕ УВЕРЕНА newText
+                            noteAdapter.setSearchCharText("");
+                        } else {
+                            noteAdapter.setSearchCharText(newText); //НЕ УВЕРЕНА newText
+
+                        }
+                        noteAdapter.notifyDataSetChanged();
+                        //adapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
+
+        searchView.setOnCloseListener(() -> {
+            noteAdapter.setSearchCharText("");
+            noteAdapter.notifyDataSetChanged();
+            return false;
+        });
+
         return true;
     }
 
@@ -160,8 +213,57 @@ public class MainActivity extends AppCompatActivity {
                 activityResultLauncher.launch(intent);
                 // startActivity(new Intent(MainActivity.this, EditNoteActivity.class));
                 return true;
-            case R.id.btnSearch:
+            /*case R.id.btnSearch:
+                SearchView searchView = (SearchView) item.getActionView();
+
+                //SearchView searchView = (SearchView) findViewById(R.id.btnSearch); // inititate a search view
+
+                // attach setOnQueryTextListener
+                // to search view defined above
+                searchView.setOnQueryTextListener(
+                        new SearchView.OnQueryTextListener() {
+
+                            // Override onQueryTextSubmit method
+                            // which is call
+                            // when submitquery is searched
+
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+
+                                if (query.isEmpty()) {
+                                    noteAdapter.setSearchCharText("");
+                                } else {
+                                    noteAdapter.setSearchCharText(query);
+
+                                }
+                                noteAdapter.notifyDataSetChanged();
+                                return false;
+                            }
+
+                            // This method is overridden to filter
+                            // the adapter according to a search query
+                            // when the user is typing search
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                if (newText.isEmpty()) {          //НЕ УВЕРЕНА newText
+                                    noteAdapter.setSearchCharText("");
+                                } else {
+                                    noteAdapter.setSearchCharText(newText); //НЕ УВЕРЕНА newText
+
+                                }
+                                noteAdapter.notifyDataSetChanged();
+                                //adapter.getFilter().filter(newText);
+                                return false;
+                            }
+                        });
+
+                searchView.setOnCloseListener(() -> {
+                    noteAdapter.setSearchCharText("");
+                    noteAdapter.notifyDataSetChanged();
+                    return false;
+                });
                 return true;
+            */
             case R.id.btnFilterShowAll:
 
                 /*// добавила для фильтра
@@ -264,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
             noteAdapter = new NoteAdapter<Note>(this, R.layout.view_note, notes);
             notesList = findViewById(R.id.notesList);
             notesList.setAdapter(noteAdapter);
-            Toast.makeText(this, "Не удалось открыть данные", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Здоровенькі були! У вас ще немає даних", Toast.LENGTH_LONG).show();
         }
     }
 }
