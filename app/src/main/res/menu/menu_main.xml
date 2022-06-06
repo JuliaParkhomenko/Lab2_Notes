@@ -9,7 +9,8 @@
         android:queryHint="Search"
         android:orderInCategory="2"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        app:iconifiedByDefault="false"/>
     <item
         android:id="@+id/btnFilter"
         android:icon="@drawable/ic_filter"

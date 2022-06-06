@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Note> notes;
     ListView notesList;
     NoteAdapter<Note> noteAdapter;
+    String importance="All";
+    SearchView searchView;
+
 
     ActivityResultLauncher<Intent> activityResultLauncher =
             registerForActivityResult(
@@ -76,7 +79,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        openData();
+        if(savedInstanceState==null) {
+            openData();
+        }else{
+            notes=savedInstanceState.getParcelableArrayList("NOTES");
+            noteAdapter = new NoteAdapter<Note>(this, R.layout.view_note, notes);
+            notesList = findViewById(R.id.notesList);
+            notesList.setAdapter(noteAdapter);
+        }
 
         notesList.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -92,6 +102,33 @@ public class MainActivity extends AppCompatActivity {
         //  register our context menu on list view (for setOnItemLongClickListener item`s menu)
         notesList = findViewById(R.id.notesList);
         registerForContextMenu(notesList);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        SearchView searchView = findViewById(R.id.btnSearch);
+        outState.putParcelableArrayList("NOTES", notes);
+        outState.putString("IMPORTANCE", importance);
+
+        if(!searchView.getQuery().toString().isEmpty()){
+            outState.putString("QUERY", searchView.getQuery().toString());
+
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        importance = savedInstanceState.getString("IMPORTANCE");
+        noteAdapter.setImportanceFilter(importance);
+        if(savedInstanceState.containsKey("QUERY")){
+            noteAdapter.setSearchCharText(savedInstanceState.getString("QUERY"));
+        }
+        else
+            noteAdapter.setSearchCharText("");
+
+        noteAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -147,8 +184,11 @@ public class MainActivity extends AppCompatActivity {
         // Initialise menu item search bar with id and take its object
         MenuItem searchViewItem
                 = menu.findItem(R.id.btnSearch);
-        SearchView searchView = (SearchView) searchViewItem.getActionView();
-
+        searchView = (SearchView) searchViewItem.getActionView();
+        if(!noteAdapter.getSearchCharText().isEmpty()){
+            searchView.setQuery(noteAdapter.getSearchCharText(), true);
+            searchView.requestFocus();
+        }
         // attach setOnQueryTextListener to search view defined above
         searchView.setOnQueryTextListener(
                 new SearchView.OnQueryTextListener() {
@@ -168,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
                     // when the user is typing search
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        if (newText.isEmpty()) {          //НЕ УВЕРЕНА newText
+                        if (newText.isEmpty()) {
                             noteAdapter.setSearchCharText("");
                         } else {
-                            noteAdapter.setSearchCharText(newText); //НЕ УВЕРЕНА newText
+                            noteAdapter.setSearchCharText(newText);
                         }
                         noteAdapter.notifyDataSetChanged();
                         return false;
@@ -198,22 +238,26 @@ public class MainActivity extends AppCompatActivity {
                 activityResultLauncher.launch(intent);
                 return true;
             case R.id.btnFilterShowAll:
-                noteAdapter.setImportanceFilter("All");
+                importance="All";
+                noteAdapter.setImportanceFilter(importance);
                 noteAdapter.notifyDataSetChanged();
                 Toast.makeText(this, R.string.filterShowAll, Toast.LENGTH_LONG).show();
                 return true;
             case R.id.btnFilterByMostImportant:
-                noteAdapter.setImportanceFilter("MostImportant");
+                importance="MostImportant";
+                noteAdapter.setImportanceFilter(importance);
                 noteAdapter.notifyDataSetChanged();
                 Toast.makeText(this, R.string.filterByMostImportant_noteBtn, Toast.LENGTH_LONG).show();
                 return true;
             case R.id.btnFilterByImportant:
-                noteAdapter.setImportanceFilter("Important");
+                importance = "Important";
+                noteAdapter.setImportanceFilter(importance);
                 noteAdapter.notifyDataSetChanged();
                 Toast.makeText(this, R.string.filterByImportant_noteBtn, Toast.LENGTH_LONG).show();
                 return true;
             case R.id.btnFilterByNotVeryImportant:
-                noteAdapter.setImportanceFilter("NotVeryImportant");
+                importance = "NotVeryImportant";
+                noteAdapter.setImportanceFilter(importance);
                 noteAdapter.notifyDataSetChanged();
                 Toast.makeText(this, R.string.filterByNotVeryImportant_noteBtn, Toast.LENGTH_LONG).show();
                 return true;

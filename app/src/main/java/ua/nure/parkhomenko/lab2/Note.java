@@ -7,7 +7,7 @@ import java.util.Calendar;
 
 public class Note implements Parcelable {
     private String dateTime;
-    private String imagePath = null;
+    private String imagePath;
     private String title;
     private int importance;
     private String description;

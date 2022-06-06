@@ -130,4 +130,8 @@ public class NoteAdapter<N> extends ArrayAdapter<Note> implements Filterable {
     public void setSearchCharText(String s) {
         searchCharText=s;
     }
+
+    public String getSearchCharText(){
+        return searchCharText;
+    }
 }
